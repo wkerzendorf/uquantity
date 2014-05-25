@@ -38,3 +38,17 @@ def test_subtraction_uquantity():
     assert c.unit == u.km
     # Uncertainties under subtraction add in quadrature
     assert c.uncertainty == math.sqrt(2**2 + 5**2)
+
+def test_multiplication_uquantity():
+    ###
+    a = UQuantity(8, u.N, 2)
+    b = UQuantity(20, u.m, 5)
+    c = a * b
+    ##
+    assert c.value == 160
+    assert c.uncertObject.nominal_value == 160
+    assert c.quantity.value == 160
+
+    assert c.unit == u.Unit("m N")
+    # Fractional uncertainties under multiplication add in quadrature
+    assert (c.uncertainty/160) == math.sqrt((2/8)**2+(5/20)^2)
