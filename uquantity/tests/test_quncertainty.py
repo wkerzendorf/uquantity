@@ -51,4 +51,4 @@ def test_multiplication_uquantity():
 
     assert c.unit == u.Unit("m N")
     # Fractional uncertainties under multiplication add in quadrature
-    assert (c.uncertainty/160) == math.sqrt((2/8)**2+(5/20)^2)
+    assert (c.uncertainty/160) == math.sqrt((2/8.0)**2+(5/20.0)**2)

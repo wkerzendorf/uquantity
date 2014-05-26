@@ -34,4 +34,11 @@ class UQuantity(object):
     def __rsub__(self, other):
         return other - self
 
+    def __mul__(self, other):
+        self.value = self.value * other.value
+        self.uncertObject = self.uncertObject * other.uncertObject
 
+        self.quantity = self.value * self.unit * other.unit
+        self.unit = self.quantity.unit
+        self.uncertainty = self.uncertObject.std_dev
+        return self
