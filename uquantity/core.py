@@ -38,10 +38,11 @@ class UQuantity(u.Quantity):
         if obj is None:
             return
 
-        self.uncert_object = uncertainties.ufloat(getattr(obj, 'value', None),
-                getattr(obj, 'uncertainty', None))
+        if isinstance(obj, UQuantity):
+            self.uncert_object = uncertainties.ufloat(getattr(obj, 'value', None),
+                    getattr(obj, 'uncertainty', None))
 
-        self.quantity = getattr(obj, 'value', None) * getattr(obj, 'unit', None)
+            self.quantity = getattr(obj, 'value', None) * getattr(obj, 'unit', None)
 
     # To be replaced by __new__ and __array_finalize__
 #    def __init__(self, value, unit, uncertainty):
