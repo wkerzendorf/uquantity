@@ -5,7 +5,7 @@ import math
 
 def test_simple_uquantity():
     ###
-    a = UQuantity(5, u.km, 2)
+    a = UQuantity(5, 2, u.km)
     ##
     assert a.value == 5
     assert a.unit == u.km
@@ -13,8 +13,8 @@ def test_simple_uquantity():
 
 def test_addition_uquantity():
     ###
-    a = UQuantity(5, u.km, 2)
-    b = UQuantity(12, u.km, 5)
+    a = UQuantity(5, 2, u.km)
+    b = UQuantity(12, 5, u.km)
     c = a + b
     ##
     assert c.value == 17
@@ -27,8 +27,8 @@ def test_addition_uquantity():
 
 def test_subtraction_uquantity():
     ###
-    a = UQuantity(5, u.km, 2)
-    b = UQuantity(12, u.km, 5)
+    a = UQuantity(5, 2, u.km)
+    b = UQuantity(12, 5, u.km)
     c = b - a
     ##
     assert c.value == 7
@@ -41,8 +41,8 @@ def test_subtraction_uquantity():
 
 def test_multiplication_uquantity():
     ###
-    a = UQuantity(8, u.N, 2)
-    b = UQuantity(20, u.m, 5)
+    a = UQuantity(8, 2, u.N)
+    b = UQuantity(20, 5, u.m)
     c = a * b
     ##
     assert c.value == 160

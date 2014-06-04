@@ -48,14 +48,14 @@ class UQuantity(u.Quantity):
 #        self.uncertainty = uncertainty
 
 #        self.quantity = value * unit
-#        self.uncertObject = ufloat(value, uncertainty)
+#        self.uncert_object = ufloat(value, uncertainty)
 
     def __add__(self, other):
         self.value = self.value + other.value
-        self.uncertObject = self.uncertObject + other.uncertObject
+        self.uncert_object = self.uncert_object + other.uncert_object
 
         self.quantity = self.value * self.unit
-        self.uncertainty = self.uncertObject.std_dev
+        self.uncertainty = self.uncert_object.std_dev
         return self
 
     def __radd__(self, other):
@@ -63,10 +63,10 @@ class UQuantity(u.Quantity):
 
     def __sub__(self, other):
         self.value = self.value - other.value
-        self.uncertObject = self.uncertObject - other.uncertObject
+        self.uncert_object = self.uncert_object - other.uncert_object
 
         self.quantity = self.value * self.unit
-        self.uncertainty = self.uncertObject.std_dev
+        self.uncertainty = self.uncert_object.std_dev
         return self
 
     def __rsub__(self, other):
@@ -74,9 +74,9 @@ class UQuantity(u.Quantity):
 
     def __mul__(self, other):
         self.value = self.value * other.value
-        self.uncertObject = self.uncertObject * other.uncertObject
+        self.uncert_object = self.uncert_object * other.uncert_object
 
         self.quantity = self.value * self.unit * other.unit
         self.unit = self.quantity.unit
-        self.uncertainty = self.uncertObject.std_dev
+        self.uncertainty = self.uncert_object.std_dev
         return self
