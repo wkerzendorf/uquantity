@@ -42,13 +42,13 @@ class UQuantity(u.Quantity):
         self.quantity = getattr(obj, 'value', None) * getattr(obj, 'unit', None)
 
     # To be replaced by __new__ and __array_finalize__
-    def __init__(self, value, unit, uncertainty):
-        self.value = value
-        self.unit = unit
-        self.uncertainty = uncertainty
+#    def __init__(self, value, unit, uncertainty):
+#        self.value = value
+#        self.unit = unit
+#        self.uncertainty = uncertainty
 
-        self.quantity = value * unit
-        self.uncertObject = ufloat(value, uncertainty)
+#        self.quantity = value * unit
+#        self.uncertObject = ufloat(value, uncertainty)
 
     def __add__(self, other):
         self.value = self.value + other.value
