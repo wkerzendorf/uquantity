@@ -27,7 +27,9 @@ class UQuantity(u.Quantity):
             raise u.UnitsError("No unit was specified")
 
         self = super(UQuantity, cls).__new__(
-                cls, value, uncertainty, unit, dtype=dtype, copy=copy)
+                cls, value, unit, dtype=dtype, copy=copy)
+
+        self.uncertainty = uncertainty
 
         return self
 
@@ -36,7 +38,7 @@ class UQuantity(u.Quantity):
         if obj is None:
             return
 
-        self.uncert_object = ufloat(getattr(obj, 'value', None),
+        self.uncert_object = uncertainties.ufloat(getattr(obj, 'value', None),
                 getattr(obj, 'uncertainty', None))
 
         self.quantity = getattr(obj, 'value', None) * getattr(obj, 'unit', None)
