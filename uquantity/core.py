@@ -31,6 +31,10 @@ class UQuantity(u.Quantity):
 
         self.uncertainty = uncertainty
 
+        self.uncert_object = uncertainties.ufloat(value, uncertainty)
+
+        self.quantity = value * unit
+
         return self
 
     def __array_finalize__(self, obj):
@@ -54,12 +58,12 @@ class UQuantity(u.Quantity):
 #        self.uncert_object = ufloat(value, uncertainty)
 
     def __add__(self, other):
-        self.value = self.value + other.value
-        self.uncert_object = self.uncert_object + other.uncert_object
+        output_value = self.value + other.value
+        output_uncert_object = self.uncert_object + other.uncert_object
 
-        self.quantity = self.value * self.unit
-        self.uncertainty = self.uncert_object.std_dev
-        return self
+        output_quantity = self.value * self.unit
+        output_uncertainty = output_uncert_object.std_dev
+        return UQuantity(output_value, output_uncertainty, output_quantity.unit)
 
     def __radd__(self, other):
         return other + self

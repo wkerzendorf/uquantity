@@ -20,7 +20,7 @@ def test_addition_uquantity():
     assert c.value == 17
     # Verify that value within Quantity and Uncertainty are correct
     assert c.quantity.value == 17
-    assert c.uncertObject.nominal_value == 17
+    assert c.uncert_object.nominal_value == 17
     assert c.unit == u.km
     # Uncertainties under addition add in quadrature
     assert c.uncertainty == math.sqrt(2**2 + 5**2)
@@ -34,7 +34,7 @@ def test_subtraction_uquantity():
     assert c.value == 7
     # Verify that value within Quantity and Uncertainty are correct
     assert c.quantity.value == 7
-    assert c.uncertObject.nominal_value == 7
+    assert c.uncert_object.nominal_value == 7
     assert c.unit == u.km
     # Uncertainties under subtraction add in quadrature
     assert c.uncertainty == math.sqrt(2**2 + 5**2)
@@ -46,7 +46,7 @@ def test_multiplication_uquantity():
     c = a * b
     ##
     assert c.value == 160
-    assert c.uncertObject.nominal_value == 160
+    assert c.uncert_object.nominal_value == 160
     assert c.quantity.value == 160
 
     assert c.unit == u.Unit("m N")
@@ -61,7 +61,7 @@ def test_multiplication_uquantity():
 #    c = a / b
 #    ##
 #    assert c.value == 4
-#    assert c.uncertObject.nominal_value == 4
+#    assert c.uncert_object.nominal_value == 4
 #    assert c.quantity.value == 4
 
 #    assert c.unit == u.Unit("m / s")
