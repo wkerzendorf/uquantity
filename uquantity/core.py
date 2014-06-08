@@ -11,7 +11,7 @@ class UQuantity(u.Quantity):
                 cls, value, unit, dtype=dtype, copy=copy)
 
         self.uncertainty = uncertainty
-        self.uncert_object = uncertainties.ufloat(value, uncertainty)
+        self.uncert_object = uncertainties.ufloat(self.value, self.uncertainty)
 
         return self
 
