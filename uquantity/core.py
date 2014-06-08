@@ -25,7 +25,7 @@ class UQuantity(u.Quantity):
         self.uncertainty = getattr(obj, 'uncertainty', None)
 
         if isinstance(obj, UQuantity):
-            self.uncert_object = uncertainties.ufloat(self.value, self.uncertainty)
+            self.uncert_object = uncertainties.ufloat(getattr(obj, 'value'), self.uncertainty)
         else:
             # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
             self.uncert_object = None
