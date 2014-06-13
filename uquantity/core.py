@@ -29,16 +29,18 @@ class UQuantity(u.Quantity):
 
         self.uncertainty = getattr(obj, 'uncertainty', None)
 
-        if self.uncertainty is not None:
+        if isinstance(obj, UQuantity):
             self.uncert_object = uncertainties.ufloat(getattr(obj, 'value'), self.uncertainty)
         else:
-            # ufloat is not defined for ufloat(_, None) so we set uncert_object to None
+            # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
             self.uncert_object = None
 
 
 
     def __add__(self, other):
         output_object = super(UQuantity, self).__add__(other)
+        output_object = output_object.view(UQuantity)
+        output_object._unit = self.unit
 
         output_object.uncert_object = self.uncert_object + other.uncert_object
         output_object.uncertainty = output_object.uncert_object.std_dev
@@ -50,6 +52,8 @@ class UQuantity(u.Quantity):
 
     def __sub__(self, other):
         output_object = super(UQuantity, self).__sub__(other)
+        output_object = output_object.view(UQuantity)
+        output_object._unit = self.unit
 
         output_object.uncert_object = self.uncert_object - other.uncert_object
         output_object.uncertainty = output_object.uncert_object.std_dev
@@ -61,6 +65,8 @@ class UQuantity(u.Quantity):
 
     def __mul__(self, other):
         output_object = super(UQuantity, self).__mul__(other)
+        output_object = output_object.view(UQuantity)
+        output_object._unit = self.unit * other.unit
 
         output_object.uncert_object = self.uncert_object * other.uncert_object
         output_object.uncertainty = output_object.uncert_object.std_dev
@@ -72,6 +78,8 @@ class UQuantity(u.Quantity):
 
     def __div__(self, other):
         output_object  = super(UQuantity, self).__div__(other)
+        output_object = output_object.view(UQuantity)
+        output_object._unit = self.unit / other.unit
 
         output_object.uncert_object = self.uncert_object / other.uncert_object
         output_object.uncertainty = output_object.uncert_object.std_dev
