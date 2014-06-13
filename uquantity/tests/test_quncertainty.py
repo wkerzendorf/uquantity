@@ -11,6 +11,15 @@ def test_simple_uquantity():
     assert a.unit == u.km
     assert a.uncertainty == 2
 
+def test_init_from_quantity_uquantity():
+    ###
+    a = 5 * u.km
+    b = UQuantity(a, 2)
+    ##
+    assert b.value == 5
+    assert b.unit == u.km
+    assert b.uncertainty == 2
+
 def test_addition_uquantity():
     ###
     a = UQuantity(5, 2, u.km)
@@ -50,17 +59,15 @@ def test_multiplication_uquantity():
     # Fractional uncertainties under multiplication add in quadrature
     assert (c.uncertainty/160) == math.sqrt((2/8.0)**2+(5/20.0)**2)
 
-# Commented out for a short bit
-#def test_division_uquantity():
-#    ###
-#    a = UQuantity(20, u.m, 3)
-#    b = UQuantity(5, u.s, 2)
-#    c = a / b
-#    ##
-#    assert c.value == 4
-#    assert c.uncert_object.nominal_value == 4
-#    assert c.quantity.value == 4
+def test_division_uquantity():
+    ###
+    a = UQuantity(20, 3, u.m)
+    b = UQuantity(5, 2, u.s)
+    c = a / b
+    ##
+    assert c.value == 4
+    assert c.uncert_object.nominal_value == 4
 
-#    assert c.unit == u.Unit("m / s")
-#    # Fractional uncertainties under division add in quadrature
-#    assert (c.uncertainty/4.0) == math.sqrt((3/20.0)**2 + (2/5.0)**2)
+    assert c.unit == u.Unit("m / s")
+    # Fractional uncertainties under division add in quadrature
+    assert (c.uncertainty/4.0) == math.sqrt((3/20.0)**2 + (2/5.0)**2)

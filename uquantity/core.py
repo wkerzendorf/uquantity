@@ -9,6 +9,11 @@ class UQuantity(u.Quantity):
 
         self = super(UQuantity, cls).__new__(
                 cls, value, unit, dtype=dtype, copy=copy)
+        if isinstance(value, u.Quantity):
+            # Handles the case of value being a Quantity by view casting
+            uquant = self.view(cls)
+            uquant._unit = self.unit
+            self = uquant
 
         self.uncertainty = uncertainty
         self.uncert_object = uncertainties.ufloat(self.value, self.uncertainty)
@@ -24,10 +29,10 @@ class UQuantity(u.Quantity):
 
         self.uncertainty = getattr(obj, 'uncertainty', None)
 
-        if isinstance(obj, UQuantity):
+        if self.uncertainty is not None:
             self.uncert_object = uncertainties.ufloat(getattr(obj, 'value'), self.uncertainty)
         else:
-            # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
+            # ufloat is not defined for ufloat(_, None) so we set uncert_object to None
             self.uncert_object = None
 
 
@@ -64,3 +69,11 @@ class UQuantity(u.Quantity):
 
     def __rmul__(self, other):
         return other * self
+
+    def __div__(self, other):
+        output_object  = super(UQuantity, self).__div__(other)
+
+        output_object.uncert_object = self.uncert_object / other.uncert_object
+        output_object.uncertainty = output_object.uncert_object.std_dev
+
+        return output_object
