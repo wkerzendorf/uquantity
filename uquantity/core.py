@@ -7,7 +7,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
-        self = u.Quantity.__new__(
+        self = super(UQuantity, cls).__new__(
                 cls, value, unit, dtype=dtype, copy=copy)
         if isinstance(value, u.Quantity):
             # Handles the case of value being a Quantity by view casting
@@ -42,8 +42,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __add__(self, other):
         output_object = super(UQuantity, self).__add__(other)
-        output_object = output_object.view(UQuantity)
-        output_object._unit = self.unit
+        #output_object.__dict__.update(uncertlib.Variable.__add__(self, other).__dict__)
 
         output_object.uncert_object = self.uncert_object + other.uncert_object
         output_object.uncertainty = output_object.uncert_object.std_dev
