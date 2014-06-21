@@ -7,7 +7,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
-        self = super(UQuantity, cls).__new__(
+        self = u.Quantity.__new__(
                 cls, value, unit, dtype=dtype, copy=copy)
         if isinstance(value, u.Quantity):
             # Handles the case of value being a Quantity by view casting
