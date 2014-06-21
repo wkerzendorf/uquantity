@@ -1,9 +1,9 @@
 from astropy import units as u
-import uncertainties
 import numpy as np
+import uncertlib
 
 
-class UQuantity(u.Quantity):
+class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
@@ -15,8 +15,9 @@ class UQuantity(u.Quantity):
             uquant._unit = self.unit
             self = uquant
 
+
         self.uncertainty = uncertainty
-        self.uncert_object = uncertainties.ufloat(self.value, self.uncertainty)
+        self.uncert_object = uncertlib.ufloat(self.value, self.uncertainty)
 
         return self
 
@@ -29,8 +30,10 @@ class UQuantity(u.Quantity):
 
         self.uncertainty = getattr(obj, 'uncertainty', None)
 
+        self.__slots__ =  ('_std_dev', 'tag', '_nominal_value', 'derivatives')
+
         if self.uncertainty is not None:
-            self.uncert_object = uncertainties.ufloat(getattr(obj, 'value'), self.uncertainty)
+            self.uncert_object = uncertlib.ufloat(getattr(obj, 'value'), self.uncertainty)
         else:
             # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
             self.uncert_object = None
