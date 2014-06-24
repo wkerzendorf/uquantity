@@ -7,14 +7,13 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
+        if hasattr(value, 'unit'):
+            unit = value.unit
+            value = value.value
+
+        value = float(value) # Makes uncertainties happy
         self = super(UQuantity, cls).__new__(
                 cls, value, unit, dtype=dtype, copy=copy)
-        if isinstance(value, u.Quantity):
-            # Handles the case of value being a Quantity by view casting
-            uquant = self.view(cls)
-            uquant._unit = self.unit
-            self = uquant
-
 
         self.uncertainty = uncertainty
         self.uncert_object = uncertlib.ufloat(self.value, self.uncertainty)
@@ -41,11 +40,10 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
 
     def __add__(self, other):
-        output_object = super(UQuantity, self).__add__(other)
-        #output_object.__dict__.update(uncertlib.Variable.__add__(self, other).__dict__)
 
-        output_object.uncert_object = self.uncert_object + other.uncert_object
-        output_object.uncertainty = output_object.uncert_object.std_dev
+        uncert_object = uncertlib.Variable.__add__(self, other)
+
+        output_object = UQuantity(u.Quantity.__add__(self, other), uncert_object.std_dev)
 
         return output_object
 
