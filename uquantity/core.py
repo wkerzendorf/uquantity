@@ -1,9 +1,9 @@
 from astropy import units as u
 import numpy as np
-import uncertlib
+from uncertlib.uncertainties import Variable, ufloat
 
 
-class UQuantity(u.Quantity, uncertlib.Variable):
+class UQuantity(Variable, u.Quantity):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
@@ -16,7 +16,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
                 cls, value, unit, dtype=dtype, copy=copy)
 
         self.uncertainty = uncertainty
-        self.uncert_object = uncertlib.ufloat(self.value, self.uncertainty)
+        self.uncert_object = ufloat(self.value, self.uncertainty)
 
         return self
 
@@ -32,7 +32,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
         self.__slots__ =  ('_std_dev', 'tag', '_nominal_value', 'derivatives')
 
         if self.uncertainty is not None:
-            self.uncert_object = uncertlib.ufloat(getattr(obj, 'value'), self.uncertainty)
+            self.uncert_object = ufloat(getattr(obj, 'value'), self.uncertainty)
         else:
             # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
             self.uncert_object = None
@@ -41,7 +41,7 @@ class UQuantity(u.Quantity, uncertlib.Variable):
 
     def __add__(self, other):
 
-        uncert_object = uncertlib.Variable.__add__(self, other)
+        uncert_object = Variable.__add__(self, other)
 
         output_object = UQuantity(u.Quantity.__add__(self, other), uncert_object.std_dev)
 
