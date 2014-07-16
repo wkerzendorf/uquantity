@@ -15,8 +15,7 @@ class UQuantity(Variable, u.Quantity):
         self = super(UQuantity, cls).__new__(
                 cls, value, unit, dtype=dtype, copy=copy)
 
-        self.uncertainty = uncertainty
-        self.uncert_object = ufloat(self.value, self.uncertainty)
+        self._std_dev = uncertainty
 
         return self
 
@@ -27,61 +26,29 @@ class UQuantity(Variable, u.Quantity):
         if obj is None:
             return
 
-        self.uncertainty = getattr(obj, 'uncertainty', None)
+        self._std_dev = getattr(obj, 'std_dev', None)
 
         self.__slots__ =  ('_std_dev', 'tag', '_nominal_value', 'derivatives')
-
-        if self.uncertainty is not None:
-            self.uncert_object = ufloat(getattr(obj, 'value'), self.uncertainty)
-        else:
-            # ufloat is not defined for ufloat(None, None) so we set uncert_object to None
-            self.uncert_object = None
 
 
 
     def __add__(self, other):
-
-        uncert_object = Variable.__add__(self, other)
-
-        output_object = UQuantity(u.Quantity.__add__(self, other), uncert_object.std_dev)
-
-        return output_object
+        return np.add(self, other)
 
     def __radd__(self, other):
         return other + self
 
     def __sub__(self, other):
-        output_object = super(UQuantity, self).__sub__(other)
-        output_object = output_object.view(UQuantity)
-        output_object._unit = self.unit
-
-        output_object.uncert_object = self.uncert_object - other.uncert_object
-        output_object.uncertainty = output_object.uncert_object.std_dev
-
-        return output_object
+        return np.subtract(self, other)
 
     def __rsub__(self, other):
         return other - self
 
     def __mul__(self, other):
-        output_object = super(UQuantity, self).__mul__(other)
-        output_object = output_object.view(UQuantity)
-        output_object._unit = self.unit * other.unit
-
-        output_object.uncert_object = self.uncert_object * other.uncert_object
-        output_object.uncertainty = output_object.uncert_object.std_dev
-
-        return output_object
+        return np.multiply(self, other)
 
     def __rmul__(self, other):
         return other * self
 
     def __div__(self, other):
-        output_object  = super(UQuantity, self).__div__(other)
-        output_object = output_object.view(UQuantity)
-        output_object._unit = self.unit / other.unit
-
-        output_object.uncert_object = self.uncert_object / other.uncert_object
-        output_object.uncertainty = output_object.uncert_object.std_dev
-
-        return output_object
+        return np.divide(self, other)
