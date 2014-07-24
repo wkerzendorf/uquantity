@@ -30,6 +30,14 @@ class UQuantity(Variable, u.Quantity):
 
         self.__slots__ =  ('_std_dev', 'tag', '_nominal_value', 'derivatives')
 
+    def __numpy_ufunc__(self, ufunc, method, i, inputs, **kwargs):
+        print 'In UQuantity.__numpy_ufunc__'
+
+        return super(UQuantity, self).__numpy_ufunc__(ufunc, method, i, inputs, **kwargs)
+
+    def __repr__(self):
+        return '<UQuantity %s+/-%s %s>' % (self.value, self.std_dev, self.unit)
+
 
 
     def __add__(self, other):
