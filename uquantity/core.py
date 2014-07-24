@@ -1,9 +1,9 @@
 from astropy import units as u
 import numpy as np
-from uncertlib.uncertainties import Variable, ufloat
+#import uncertainties as uncert
+import uncertlib.uncertainties as uncert
 
-
-class UQuantity(Variable, u.Quantity):
+class UQuantity(uncert.Variable, u.Quantity):
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
@@ -33,11 +33,15 @@ class UQuantity(Variable, u.Quantity):
     def __numpy_ufunc__(self, ufunc, method, i, inputs, **kwargs):
         print 'In UQuantity.__numpy_ufunc__'
 
-        return super(UQuantity, self).__numpy_ufunc__(ufunc, method, i, inputs, **kwargs)
+        wrapped_ufunc = uncert.wrap(ufunc)
+        return wrapped_ufunc(*inputs, **kwargs)
 
     def __repr__(self):
         return '<UQuantity %s+/-%s %s>' % (self.value, self.std_dev, self.unit)
 
+    @property
+    def value(self):
+        return self._nominal_value
 
 
     def __add__(self, other):
