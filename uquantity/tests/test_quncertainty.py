@@ -9,7 +9,7 @@ def test_simple_uquantity():
     ##
     assert a.value == 5
     assert a.unit == u.km
-    assert a.uncertainty == 2
+    assert a.std_dev == 2
 
 def test_init_from_quantity_uquantity():
     ###
@@ -18,7 +18,7 @@ def test_init_from_quantity_uquantity():
     ##
     assert b.value == 5
     assert b.unit == u.km
-    assert b.uncertainty == 2
+    assert b.std_dev == 2
 
 def test_addition_uquantity():
     ###
@@ -28,10 +28,9 @@ def test_addition_uquantity():
     ##
     assert c.value == 17
     # Verify that value within Uncertainty is correct
-    assert c.uncert_object.nominal_value == 17
     assert c.unit == u.km
     # Uncertainties under addition add in quadrature
-    assert c.uncertainty == math.sqrt(2**2 + 5**2)
+    assert c.std_dev == math.sqrt(2**2 + 5**2)
 
 def test_subtraction_uquantity():
     ###
@@ -41,10 +40,9 @@ def test_subtraction_uquantity():
     ##
     assert c.value == 7
     # Verify that value within Uncertainty is correct
-    assert c.uncert_object.nominal_value == 7
     assert c.unit == u.km
     # Uncertainties under subtraction add in quadrature
-    assert c.uncertainty == math.sqrt(2**2 + 5**2)
+    assert c.std_dev == math.sqrt(2**2 + 5**2)
 
 def test_multiplication_uquantity():
     ###
@@ -53,11 +51,10 @@ def test_multiplication_uquantity():
     c = a * b
     ##
     assert c.value == 160
-    assert c.uncert_object.nominal_value == 160
 
     assert c.unit == u.Unit("m N")
     # Fractional uncertainties under multiplication add in quadrature
-    assert (c.uncertainty/160) == math.sqrt((2/8.0)**2+(5/20.0)**2)
+    assert (c.std_dev/160) == math.sqrt((2/8.0)**2+(5/20.0)**2)
 
 def test_division_uquantity():
     ###
@@ -66,8 +63,7 @@ def test_division_uquantity():
     c = a / b
     ##
     assert c.value == 4
-    assert c.uncert_object.nominal_value == 4
 
     assert c.unit == u.Unit("m / s")
     # Fractional uncertainties under division add in quadrature
-    assert (c.uncertainty/4.0) == math.sqrt((3/20.0)**2 + (2/5.0)**2)
+    assert (c.std_dev/4.0) == math.sqrt((3/20.0)**2 + (2/5.0)**2)
