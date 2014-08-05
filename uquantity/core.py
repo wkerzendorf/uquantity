@@ -1,9 +1,34 @@
 from astropy import units as u
 import numpy as np
-#import uncertainties as uncert
-import uncertlib.uncertainties as uncert
+import uncertainties as uncert
+#import uncertlib.uncertainties as uncert
+
+
+class SlotlessMeta(type):
+    def __new__(meta, name, bases, dct):
+
+        new_bases = ()
+
+        for base in bases:
+            #print "Dict of %s: %s" % (base, base.__dict__)
+            new_base_dict = base.__dict__.copy()
+            try:
+                del new_base_dict['__slots__']
+                new_base = type(str(base), (), new_base_dict)
+            except KeyError:
+                print "No __slots__ in %s" % base
+                new_base = base
+
+
+            new_bases = new_bases + (new_base,)
+
+        new = type(name, new_bases, dct)
+        return new
+
 
 class UQuantity(uncert.Variable, u.Quantity):
+
+    __metaclass__ = SlotlessMeta
 
     def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
 
@@ -28,10 +53,10 @@ class UQuantity(uncert.Variable, u.Quantity):
 
         self._std_dev = getattr(obj, 'std_dev', None)
 
-        self.__slots__ =  ('_std_dev', 'tag', '_nominal_value', 'derivatives')
 
     def __numpy_ufunc__(self, ufunc, method, i, inputs, **kwargs):
         print 'In UQuantity.__numpy_ufunc__'
+        print inputs
 
         wrapped_ufunc = uncert.wrap(ufunc)
         return wrapped_ufunc(*inputs, **kwargs)

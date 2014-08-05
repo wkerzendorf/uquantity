@@ -67,3 +67,17 @@ def test_division_uquantity():
     assert c.unit == u.Unit("m / s")
     # Fractional uncertainties under division add in quadrature
     assert (c.std_dev/4.0) == math.sqrt((3/20.0)**2 + (2/5.0)**2)
+
+def test_gravitation_uquantity():
+    ###
+    G = UQuantity(6.67384e-11, 1.2e-4, (u.N * (u.m / u.kg)**2)) # Gravitational constant
+    m1 = UQuantity(1e15, 1e5, u.kg)
+    m2 = UQuantity(100, 10, u.kg)
+    r = UQuantity(10000, 500, u.m)
+    F = G * (m1 * m2) / r**2
+    ###
+    assert F.value == 6.67e-11 * (1e15 * 100) / 10000**2
+
+    assert F.unit == u.N
+    # Uncertainties calculated using partial derivative method
+
