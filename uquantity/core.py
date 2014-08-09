@@ -21,17 +21,19 @@ class SlotlessMeta(type):
                 # Avoids touching parents that do not need to be modified
                 new_base = base
 
-
             new_bases = new_bases + (new_base,)
 
         return type(name, new_bases, dct)
 
-
-class UQuantity(uncert.Variable, u.Quantity):
-
+class SlotlessVariable(uncert.Variable):
     __metaclass__ = SlotlessMeta
 
-    def __new__(cls, value, uncertainty, unit=None, dtype=None, copy=True):
+class UQuantity(SlotlessVariable, u.Quantity):
+
+    #__metaclass__ = SlotlessMeta
+    __slots__ = ('_std_dev', 'tag')
+
+    def __new__(cls, value, uncertainty, unit=None, tag=None, dtype=None, copy=True):
 
         if hasattr(value, 'unit'):
             unit = value.unit
@@ -44,11 +46,19 @@ class UQuantity(uncert.Variable, u.Quantity):
         self = u.Quantity.__new__(cls, value, unit)
         self.isscalar = True
 
-        super(UQuantity, cls).__init__(self, value, uncertainty)
+        #super(UQuantity, cls).__init__(self, value, uncertainty)
         #self._std_dev = uncertainty
+
+        self._nominal_value = value
+        self.std_dev = value
+        self.tag = tag
+        self.derivatives = {self:1.}
 
         return self
 
+    def __init__(self, *args, **kwargs):
+        # Prevents Variable's __init__ from getting called
+        pass
 
 
 
