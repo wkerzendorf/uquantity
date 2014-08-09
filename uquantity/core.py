@@ -50,7 +50,7 @@ class UQuantity(SlotlessVariable, u.Quantity):
         #self._std_dev = uncertainty
 
         self._nominal_value = value
-        self.std_dev = value
+        self.std_dev = uncertainty
         self.tag = tag
         self.derivatives = {self:1.}
 
