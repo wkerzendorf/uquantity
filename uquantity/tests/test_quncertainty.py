@@ -80,6 +80,6 @@ def test_gravitation_uquantity():
 
     assert F.unit == u.N
     # Uncertainties calculated using partial derivative method
-    assert F.std_dev = math.sqrt((m1.value*m2.value/(r.value**2)*G.std_dev)**2 + (G.value*m2.value/(r.value**2)*m1.std_dev)**2 +
+    assert F.std_dev == math.sqrt((m1.value*m2.value/(r.value**2)*G.std_dev)**2 + (G.value*m2.value/(r.value**2)*m1.std_dev)**2 +
             (G.value*m1/(r.value**2)*m2.std_dev)**2 + (-2*G.value*m1.value*m2.value/(r.value**3)*r.std_dev)^2)
 
