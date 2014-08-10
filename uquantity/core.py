@@ -12,7 +12,6 @@ class SlotlessMeta(type):
 
         # Iterates through each parent class
         for base in bases:
-            #print "Dict of %s: %s" % (base, base.__dict__)
             new_base_dict = base.__dict__.copy()
             try:
                 del new_base_dict['__slots__']
@@ -30,7 +29,6 @@ class SlotlessVariable(uncert.Variable):
 
 class UQuantity(SlotlessVariable, u.Quantity):
 
-    #__metaclass__ = SlotlessMeta
     __slots__ = ('_std_dev', 'tag')
 
     def __new__(cls, value, uncertainty, unit=None, tag=None, dtype=None, copy=True):
@@ -46,9 +44,8 @@ class UQuantity(SlotlessVariable, u.Quantity):
         self = u.Quantity.__new__(cls, value, unit)
         self.isscalar = True
 
-        #super(UQuantity, cls).__init__(self, value, uncertainty)
-        #self._std_dev = uncertainty
-
+        # Recreation of code in Variable.__init__ and AffineScalarFunc.__init__
+        # because the metaclass breaks super() calls
         self._nominal_value = value
         self.std_dev = uncertainty
         self.tag = tag
@@ -60,14 +57,10 @@ class UQuantity(SlotlessVariable, u.Quantity):
         # Prevents Variable's __init__ from getting called
         pass
 
-
-
     def __array_finalize__(self, obj):
 
         if obj is None:
             return
-
-        #self._std_dev = getattr(obj, 'std_dev', None)
 
     def __float__(self):
         return float(self.value)
@@ -77,15 +70,21 @@ class UQuantity(SlotlessVariable, u.Quantity):
         print inputs
 
         wrapped_ufunc = uncert.wrap(ufunc)
-        return wrapped_ufunc(*inputs, **kwargs)
+        var_inputs = uquantity_to_variable(inputs)
+        print var_inputs
+
+        return wrapped_ufunc(*var_inputs, **kwargs)
 
     def __repr__(self):
         return '<UQuantity %s+/-%s %s>' % (self.value, self.std_dev, self.unit)
 
     @property
     def value(self):
-        return self._nominal_value
+        return self.nominal_value
 
+    @property
+    def nominal_value(self):
+        return self._nominal_value
 
     def __add__(self, other):
         return np.add(self, other)
@@ -107,3 +106,12 @@ class UQuantity(SlotlessVariable, u.Quantity):
 
     def __div__(self, other):
         return np.divide(self, other)
+
+def uquantity_to_variable(uquantities):
+    out = ()
+    # Likely needs optimization
+    for uquan in uquantities:
+        var = uncert.Variable(uquan.value, uquan.std_dev)
+        out = out + (var,)
+    return out
+
