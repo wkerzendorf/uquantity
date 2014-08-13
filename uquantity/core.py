@@ -69,24 +69,18 @@ class UQuantity(SlotlessVariable, u.Quantity):
         return float(self.value)
 
     def __numpy_ufunc__(self, ufunc, method, i, inputs, **kwargs):
-        print 'In UQuantity.__numpy_ufunc__'
-        print inputs
-
         # Calculates the uncertainties
         wrapped_ufunc = uncert.wrap(ufunc)
         var_inputs = uquantity_to_variable(inputs)
-        print var_inputs
         var_out = wrapped_ufunc(*var_inputs, **kwargs)
 
         # Calculates the units
         units_inputs = tuple( [uquant.unit for uquant in inputs] )
-        print units_inputs
         try:
             units_out = ufunc(*units_inputs, **kwargs)
         except TypeError:
             # Cases like addition and subtraction
             units_out = units_inputs[0]
-        print units_out
 
         return UQuantity(var_out.nominal_value, var_out.std_dev, units_out, derivatives=var_out.derivatives)
 
@@ -104,20 +98,11 @@ class UQuantity(SlotlessVariable, u.Quantity):
     def __add__(self, other):
         return np.add(self, other)
 
-    #def __radd__(self, other):
-    #    return other + self
-
     def __sub__(self, other):
         return np.subtract(self, other)
 
-    #def __rsub__(self, other):
-    #    return other - self
-
     def __mul__(self, other):
         return np.multiply(self, other)
-
-    #def __rmul__(self, other):
-    #    return other * self
 
     def __div__(self, other):
         return np.divide(self, other)
