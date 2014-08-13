@@ -31,7 +31,7 @@ class UQuantity(SlotlessVariable, u.Quantity):
 
     __slots__ = ('_std_dev', 'tag')
 
-    def __new__(cls, value, uncertainty, unit=None, tag=None, dtype=None, copy=True):
+    def __new__(cls, value, uncertainty, unit=None, tag=None, derivatives=None, dtype=None, copy=True):
 
         if hasattr(value, 'unit'):
             unit = value.unit
@@ -49,7 +49,10 @@ class UQuantity(SlotlessVariable, u.Quantity):
         self._nominal_value = value
         self.std_dev = uncertainty
         self.tag = tag
-        self.derivatives = {self:1.}
+        if derivatives is not None:
+            self.derivatives = derivatives
+        else:
+            self.derivatives = {self:1.}
 
         return self
 
@@ -69,11 +72,23 @@ class UQuantity(SlotlessVariable, u.Quantity):
         print 'In UQuantity.__numpy_ufunc__'
         print inputs
 
+        # Calculates the uncertainties
         wrapped_ufunc = uncert.wrap(ufunc)
         var_inputs = uquantity_to_variable(inputs)
         print var_inputs
+        var_out = wrapped_ufunc(*var_inputs, **kwargs)
 
-        return wrapped_ufunc(*var_inputs, **kwargs)
+        # Calculates the units
+        units_inputs = tuple( [uquant.unit for uquant in inputs] )
+        print units_inputs
+        try:
+            units_out = ufunc(*units_inputs, **kwargs)
+        except TypeError:
+            # Cases like addition and subtraction
+            units_out = units_inputs[0]
+        print units_out
+
+        return UQuantity(var_out.nominal_value, var_out.std_dev, units_out, derivatives=var_out.derivatives)
 
     def __repr__(self):
         return '<UQuantity %s+/-%s %s>' % (self.value, self.std_dev, self.unit)
