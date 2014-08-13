@@ -104,20 +104,20 @@ class UQuantity(SlotlessVariable, u.Quantity):
     def __add__(self, other):
         return np.add(self, other)
 
-    def __radd__(self, other):
-        return other + self
+    #def __radd__(self, other):
+    #    return other + self
 
     def __sub__(self, other):
         return np.subtract(self, other)
 
-    def __rsub__(self, other):
-        return other - self
+    #def __rsub__(self, other):
+    #    return other - self
 
     def __mul__(self, other):
         return np.multiply(self, other)
 
-    def __rmul__(self, other):
-        return other * self
+    #def __rmul__(self, other):
+    #    return other * self
 
     def __div__(self, other):
         return np.divide(self, other)
