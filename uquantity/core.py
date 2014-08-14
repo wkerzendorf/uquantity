@@ -81,6 +81,9 @@ class UQuantity(SlotlessVariable, u.Quantity):
         except TypeError:
             # Cases like addition and subtraction
             units_out = units_inputs[0]
+        except AttributeError:
+            # Cases like trig functions
+            units_out = units_inputs[0]
 
         return UQuantity(var_out.nominal_value, var_out.std_dev, units_out, derivatives=var_out.derivatives)
 
