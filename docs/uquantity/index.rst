@@ -40,3 +40,11 @@ Likewise units are handled just as they would be in Quantity.
     >>> c = UQuantity(5.0, 0.1, u.s)
     >>> sum / c
     <UQuantity 5.52+/-0.173747403359 m / s>
+
+Operations from `numpy` work on |UQuantity| objects, with proper propagation of uncertainty.
+
+    >>> import numpy as np
+
+    >>> angle = UQuantity(1.32, 0.01, u.rad)
+    >>> np.sin(angle)
+    <UQuantity 0.968715+/-0.002481 rad>
