@@ -1,7 +1,6 @@
 from astropy import units as u
 import numpy as np
 import uncertainties as uncert
-#import uncertlib.uncertainties as uncert
 
 
 # Eliminates base layout conflict by removing __slots__ fields from parent classes
