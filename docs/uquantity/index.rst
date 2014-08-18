@@ -65,7 +65,7 @@ The tracking carries across multiple independent operations.
     >>> area = a**2
     >>> area_2 = area + b
     >>> area_2
-    <UQuantity 159.29+/-73.82 km2>
+    <UQuantity 9.0+/-2.13775583264 km2>
     >>> (area_2 - b) / a
     <UQuantity 1.0+/-0.2 km>
 
