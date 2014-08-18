@@ -68,3 +68,29 @@ The tracking carries across multiple independent operations.
     <UQuantity 159.29+/-73.82 km2>
     >>> (area_2 - b) / a
     <UQuantity 1.0+/-0.2 km>
+
+Technical Guide
+===============
+
+|UQuantity| is a mixin class that inherits |Quantity| from Astropy and |Variable| from `uncertainties`.
+|Quantity| is part of the `units` package and is Astropy's class for representing physical quantities
+with units. |Quantity| inherits from Numpy's class |ndarray| and provides all of the machinery needed
+for working with n-dimensional arrays of physical quantities. |UQuantity| preserves this compatibility
+with Numpy by implementing the method __numpy_ufunc__ for handling Numpy's universal functions.
+
+|Variable| is a class within `uncertainties` that represents a Gaussian probability distribution with
+a center and standard deviation. |Variable| uses automatic differentiation to propagate uncertainties
+and tracks the calculated derivatives of variables through chains of operations. Because the variables
+that go into an end result are tracked, correlations are handled transparently.
+
+Non-cooporative multiple inheritance in Python does present some difficulties. Luckily in this case 
+|Quantity| inheriting from |ndarray| meant that it uses the methods __new__ and __array_finalize__ for
+initialization while |Variable| uses __init__. This allows |UQuantity| to call each parent initializer
+seperately, rather than having to use wrappers around each parent to get super() to work.
+
+One rather severe issue that arises from the two parent classes not being written to work with eachother
+is their treatment of the __slots__ field. The field __slots__ is a special field that causes the object
+defining it to be stored statically, rather than as a dynamic dictionary. Space savings from this can be
+quite large, but it does not interact well with inheritance. Specifically, inheriting from |Quantity| and
+|Variable| causes a base layout error. To get around this a metaclass is used that removes the __slots__
+definition from any parent; __slots__ is then redefined in |UQuantity|.
