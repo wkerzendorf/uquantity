@@ -11,7 +11,7 @@ propagation of uncertainties using the package `uncertainties`.
 Getting Started
 ===============
 
-`uquantity` uses the `astropy.units` package to represent a value with a unit and standard deviation.
+|UQuantity| uses the `astropy.units` package to represent a value with a unit and standard deviation.
 
     >>> from uquantity import UQuantity
     >>> from astropy import units as u
