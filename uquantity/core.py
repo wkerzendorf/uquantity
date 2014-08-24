@@ -28,7 +28,7 @@ class SlotlessVariable(uncert.Variable):
 
 class UQuantity(SlotlessVariable, u.Quantity):
 
-    __slots__ = ('_std_dev', 'tag')
+    __slots__ = ('_std_dev', 'tag', 'derivatives')
 
     def __new__(cls, value, uncertainty, unit=None, tag=None, derivatives=None, dtype=None, copy=True):
 
@@ -114,6 +114,7 @@ def uquantity_to_variable(uquantities):
     # Likely needs optimization
     for uquan in uquantities:
         var = uncert.Variable(uquan.value, uquan.std_dev)
+        var.derivatives = uquan.derivatives
         out = out + (var,)
     return out
 
