@@ -28,6 +28,7 @@
 import datetime
 import os
 import sys
+sys.path.append('../')
 
 # Load all of the global Astropy configuration
 from astropy.sphinx.conf import *
